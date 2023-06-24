@@ -1,5 +1,14 @@
 import tensorflow as tf
 import os
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
+import cv2
+import imghdr
+import numpy as np
+from matplotlib import pyplot as plt
+from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
+from tensorflow.keras.models import load_model
+
 
 # Avoid OOM errors by setting GPU Memory Consumption Growth
 gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -8,12 +17,9 @@ print("GPUS : ", gpus)
 print("================================================\n")
 for gpu in gpus: 
     tf.config.experimental.set_memory_growth(gpu, True)
-
 tf.config.list_physical_devices('GPU')
 
 ## Remove dodgy images
-import cv2
-import imghdr
 
 """
 data_dir = 'data' 
@@ -34,11 +40,10 @@ for image_class in os.listdir(data_dir): #loop over dirs in data i,e  happy and 
 """
             
 ## Load Data
-import numpy as np
-from matplotlib import pyplot as plt
 data = tf.keras.utils.image_dataset_from_directory('data') # Its a generator function
 data_iterator = data.as_numpy_iterator() # So Iterate data
 batch = data_iterator.next()    # Get batch
+
 # batch[0] is images list and batch[1] contains labels
 # print('batch[0] shape: ', batch[0].shape)
 # print('batch[1] : ', batch[1])
@@ -80,8 +85,6 @@ val = data.skip(train_size).take(val_size)
 test = data.skip(train_size+val_size).take(test_size)
 
 ## Build Deep Learning Model
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
 
 model = Sequential()
 model.add(Conv2D(16, (3,3), 1, activation='relu', input_shape=(256,256,3)))
@@ -127,7 +130,6 @@ fig.suptitle('Accuracy', fontsize=20)
 plt.legend(loc="upper left")
 plt.show()
 
-from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
 pre = Precision()
 re = Recall()
 acc = BinaryAccuracy()
@@ -154,7 +156,6 @@ else:
     print(f'Predicted class is Happy')
 
 ## Save the Model
-from tensorflow.keras.models import load_model
 model.save(os.path.join('models','imageclassifier.h5'))
 new_model = load_model('imageclassifier.h5')
 new_model.predict(np.expand_dims(resize/255, 0))
