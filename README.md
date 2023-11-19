@@ -1,36 +1,121 @@
-Image Classification - Happy and Sad
-This code is an implementation of an image classification task using TensorFlow and Keras. The goal is to train a deep learning model to classify images into two classes: "Happy" and "Sad." The dataset is assumed to be organized into two directories, one for each class.
+Certainly! To make the code more organized when pasted on GitHub, you can use headings and subheadings. Here's a modified version of the code with appropriate headings:
 
-Prerequisites
-TensorFlow (imported as tf)
-OpenCV (cv2)
-NumPy (np)
-Matplotlib (plt)
-Setup and GPU Configuration
-The code begins by configuring GPU memory growth to avoid out-of-memory errors. It lists available GPUs and sets memory growth for each.
+```python
+# Image Classification - Happy and Sad
 
-Data Preprocessing
-There is a section of code (currently commented out) for removing potentially problematic images from the dataset based on their file extensions. The dataset is loaded using tf.keras.utils.image_dataset_from_directory, and basic visualizations of the data are shown.
+## Importing Libraries
+```python
+import tensorflow as tf
+import os
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
+import cv2
+import imghdr
+import numpy as np
+from matplotlib import pyplot as plt
+from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
+from tensorflow.keras.models import load_model
+```
 
-Data Preprocessing and Splitting
-The dataset is preprocessed by normalizing pixel values to a range between 0 and 1. It is then split into training, validation, and test sets.
+## GPU Configuration
+```python
+# Avoid OOM errors by setting GPU Memory Consumption Growth
+gpus = tf.config.experimental.list_physical_devices('GPU')
+print("====================GPU's List============================")
+print("GPUS : ", gpus)
+print("================================================\n")
+for gpu in gpus: 
+    tf.config.experimental.set_memory_growth(gpu, True)
+tf.config.list_physical_devices('GPU')
+```
 
-Model Architecture
-The deep learning model is a convolutional neural network (CNN) implemented using the Sequential API of Keras. It consists of convolutional layers with max pooling and dropout for regularization, followed by dense layers. The final layer uses the sigmoid activation function for binary classification.
+## Data Preprocessing
+```python
+# Remove dodgy images
+# ...
 
-Model Training
-The model is compiled using the Adam optimizer and binary crossentropy loss. It is trained on the training set for 20 epochs, with validation on a separate validation set. Training progress is logged for later visualization.
+# Load Data
+data = tf.keras.utils.image_dataset_from_directory('data') # Its a generator function
+# ...
+```
 
-Performance Visualization
-After training, the code generates plots for both loss and accuracy over epochs.
+## Data Visualization
+```python
+# Visualization
+# ...
+```
 
-Model Evaluation
-Precision, recall, and binary accuracy metrics are calculated on the test set after training.
+## Data Preprocessing
+```python
+# Preprocessing
+# ...
+```
 
-Model Testing
-The code includes a section for testing the trained model on a new image (happy_pic.jpg). The image is loaded, resized, and the model predicts whether it belongs to the "Happy" or "Sad" class.
+## Splitting Data
+```python
+# Split Data
+# ...
+```
 
-Model Saving and Loading
-The trained model is saved to a file (imageclassifier.h5). The code then loads the saved model and performs a prediction on the same image.
+## Model Architecture
+```python
+# Build Deep Learning Model
+model = Sequential()
+# ...
+model.compile('adam', loss=tf.losses.BinaryCrossentropy(), metrics=['accuracy'])
+model.summary()
+```
 
-Note: The code includes commented-out sections for visualization and image removal, which can be uncommented and executed based on specific needs. Additionally, make sure to provide a suitable dataset directory and adjust parameters as needed for your specific use case.
+## Model Training
+```python
+# Train
+logdir='logs'
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
+hist = model.fit(train, epochs=20, validation_data=val, callbacks=[tensorboard_callback])
+```
+
+## Plot Performance
+```python
+# Plot Performance
+
+# Loss
+fig = plt.figure()
+# ...
+
+# Accuracy
+fig = plt.figure()
+# ...
+plt.legend(loc="upper left")
+plt.show()
+```
+
+## Model Evaluation
+```python
+# Model Evaluation
+pre = Precision()
+re = Recall()
+acc = BinaryAccuracy()
+# ...
+print(pre.result(), re.result(), acc.result())
+```
+
+## Model Testing
+```python
+# Test
+img = cv2.imread('happy_pic.jpg')
+# ...
+if yhat > 0.5: 
+    print(f'Predicted class is Sad')
+else:
+    print(f'Predicted class is Happy')
+```
+
+## Save and Load Model
+```python
+# Save the Model
+model.save(os.path.join('models','imageclassifier.h5'))
+new_model = load_model('imageclassifier.h5')
+new_model.predict(np.expand_dims(resize/255, 0))
+```
+
+Feel free to adjust the headings based on your preferences or add more details as needed. This structure should help in making the code more readable on GitHub.
