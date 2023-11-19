@@ -118,4 +118,3 @@ new_model = load_model('imageclassifier.h5')
 new_model.predict(np.expand_dims(resize/255, 0))
 ```
 
-Feel free to adjust the headings based on your preferences or add more details as needed. This structure should help in making the code more readable on GitHub.
